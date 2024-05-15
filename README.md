@@ -39,3 +39,5 @@
 - (예시) 화살표 함수(arrow-function) 어떤 코드를 언제 생략할 수있는지 완벽 이해했습니다.
 - (예시) 구조분해할당(Destructuring assignment)을 써보니 가독성도, 유지보수도 편할것같습니다.
   <br />
+
+노션 구성 : https://www.notion.so/BE-01-eef666bd0aa14e05b4f62eb87fb6825c
