@@ -1,0 +1,90 @@
+plugins {
+	id 'java'
+	id 'org.springframework.boot' version '2.7.14'
+	id 'io.spring.dependency-management' version '1.0.15.RELEASE'
+}
+
+group = 'com.github'
+version = '0.0.1-SNAPSHOT'
+def querydslVersion = '5.0.0'
+
+java {
+	sourceCompatibility = '17'
+}
+
+configurations {
+	compileOnly {
+		extendsFrom annotationProcessor
+	}
+}
+
+repositories {
+	mavenCentral()
+}
+
+
+dependencies {
+	//spring data jdbc
+	implementation 'org.springframework.boot:spring-boot-starter-data-jdbc'
+	//spring web
+	implementation 'org.springframework.boot:spring-boot-starter-web'
+
+	// mysql driver Data
+	runtimeOnly 'com.mysql:mysql-connector-j'
+
+	// Lombok
+	compileOnly 'org.projectlombok:lombok'
+	annotationProcessor 'org.projectlombok:lombok'
+
+	// JPA
+	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+	runtimeOnly 'com.h2database:h2'
+
+	// Test Lombok 수동 추가
+	testCompileOnly 'org.projectlombok:lombok'
+	testAnnotationProcessor 'org.projectlombok:lombok'
+
+	// Mapstruct 수동 추가
+	implementation 'org.mapstruct:mapstruct:1.5.3.Final'
+	annotationProcessor 'org.mapstruct:mapstruct-processor:1.5.3.Final'
+
+	// Cache 수동 추가
+	implementation 'org.springframework.boot:spring-boot-starter-cache'
+
+	// swagger 수동 추가
+	implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.0.2'
+
+	// jwt 수동 추가
+	implementation 'io.jsonwebtoken:jjwt:0.9.1'
+
+	// query-dsl 수동 추가
+	// QueryDSL JPA 라이브러리
+	implementation group: 'com.querydsl', name: 'querydsl-jpa', version: querydslVersion
+	// QueryDSL 라이브러리
+	implementation group: 'com.querydsl', name: 'querydsl-core', version: querydslVersion
+	implementation group: 'com.querydsl', name: 'querydsl-apt', version: querydslVersion
+
+	// query-dsl 수동 추가
+	annotationProcessor "com.querydsl:querydsl-apt:${querydslVersion}:jpa"
+	// java.lang.NoClassDefFoundError(javax.annotation.Entity) 발생 시 추가
+	annotationProcessor "jakarta.persistence:jakarta.persistence-api"
+	// java.lang.NoClassDefFoundError(javax.annotation.Generated) 발생 시 추가
+	annotationProcessor 'jakarta.annotation:jakarta.annotation-api'
+
+	// Test
+	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+}
+tasks.named('bootBuildImage') {
+	builder = 'paketobuildpacks/builder-jammy-base:latest'
+}
+
+tasks.named('test') {
+	useJUnitPlatform()
+}
+
+// clean task를 실행 시 QClass를 삭제-- querydsl 관련
+clean {
+	// QClass가 생성되는 위치
+	delete file('src/main/generated')
+}
